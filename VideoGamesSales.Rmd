@@ -1,0 +1,88 @@
+---
+title: "Video Games Sales"
+author: "Niloufar ANSARI Louis LEFEVRE"
+date: "2020/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(data.table)
+library(plyr)
+library(ggplot2)
+library(rAmCharts)
+```
+
+
+## Chargement des données
+
+```{r}
+vgsales <- read.csv("data/vgsales.csv")
+```
+
+
+## Visualisation des données
+
+```{r}
+summary(vgsales)
+```
+
+
+## Nombre de jeux vidéos sorties par an
+
+``` {r, echo = FALSE}
+count_games <- table(vgsales$Year)
+data_games = data.frame(count_games)
+amBarplot(data=data_games, x = "Var1", y="Freq", legend=TRUE, legendPosition = "right", labelRotation = 90)
+```
+
+
+## Le genre de jeu vidéo le plus représenté, les 10 dernières années
+
+```{r, echo = FALSE}
+vgsales$Year <- as.numeric(as.character(vgsales$Year))
+count10 = table(vgsales$Genre[vgsales$Year>="2010"])
+dataplatforme1 <- data.frame(count10)
+amBarplot(data = dataplatforme1, x="Var1", y = "Freq", legend = TRUE, legendPosition = "left", show_values = TRUE, labelRotation = 45)
+```
+
+
+## Le genre de jeu vidéo le plus représenté, les 20 dernières années
+
+```{r, echo = FALSE}
+count20 = table(vgsales$Genre[vgsales$Year>="2000"])
+dataplatforme2 <- data.frame(count20)
+amBarplot(data = dataplatforme2 , x="Var1", y = "Freq", legend = TRUE, legendPosition = "left", show_values = TRUE, labelRotation = 45)
+```
+
+
+
+## Est-ce qu'il y a un jeu qui se détache en terme de revenu ?
+
+
+```{r, echo = FALSE}
+newdata = data.frame(vgsales$Name, vgsales$Global_Sales)
+amBarplot(data = newdata[1:15,], x = "vgsales.Name", y = "vgsales.Global_Sales", horiz = TRUE)
+```
+
+
+## Les plateformes les plus représentées
+
+```{r, echo = FALSE}
+dataplatforme <- data.frame(vgsales$Platform, vgsales$Name)
+statplat <- count(dataplatforme, vars = "vgsales$Platform")
+dataplat<-data.frame(statplat)
+amBarplot(data = dataplat, x="vgsales.Platform", y = "freq", legend = TRUE, legendPosition = "left", show_values = TRUE, horiz = TRUE)
+```
+
+
+## Les publishers les plus représentés
+
+```{r, echo = FALSE}
+tab_pub = table(vgsales$Publisher)
+data_pub<-data.frame(tab_pub)
+amBarplot(data = data_pub, x="Var1", y = "Freq", legend = TRUE, legendPosition = "left", labelRotation = 90, horiz = TRUE)
+```
